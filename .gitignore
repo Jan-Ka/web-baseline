@@ -27,6 +27,13 @@ PLAN.md
 .vs/
 *.swp
 
+# Tooling. package.json and pnpm-lock.yaml are committed. The markdown tools are
+# pinned like every other dependency. Only the installed tree stays out.
+node_modules/
+package-lock.json
+npm-shrinkwrap.json
+yarn.lock
+
 # Task runner cache
 .task/
 
