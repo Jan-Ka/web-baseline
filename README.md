@@ -37,8 +37,9 @@ The rules, each with a checkable form, are in [docs/principles.md](docs/principl
 ## Status
 
 Decided: which languages enter the comparison (DE-0001), the workload, a small
-marketplace driven by user flows (DE-0002), and the 12 subjects in three tiers
-(DE-0003). Open: what size of difference counts as meaningful.
+marketplace driven by user flows (DE-0002), the 12 subjects in three tiers
+(DE-0003), and the spec format with k6 as the tool for flows (DE-0004). Open: what
+size of difference counts as meaningful.
 
 ## Reproducing the reference
 
