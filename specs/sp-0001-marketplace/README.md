@@ -187,11 +187,38 @@ the end shows no items and answers 200.
 
 ## Parameters
 
-| Parameter          | Value | Status                                |
-| ------------------ | ----- | ------------------------------------- |
-| `STORE_WAIT_MS`    | 1     | proposal, to register as a hypothesis |
-| `PASSWORD_WAIT_MS` | 50    | proposal, to register as a hypothesis |
-| Page size          | 20    | fixed by this spec                    |
+| Parameter          | Value |
+| ------------------ | ----- |
+| `STORE_WAIT_MS`    | 1     |
+| `PASSWORD_WAIT_MS` | 200   |
+| Page size          | 20    |
+
+The waits replace work that the measured path does not hold, per PR-0007. They
+are not a model of one database or one hash. Their purpose is a wait that is
+deterministic, repeatable and of a plausible size. HY-0009 holds the claim that
+such a wait affects the server like the real work.
+
+Each wait has the order of magnitude of the work it replaces. Each wait is also
+large against the timer slack, so that the wait is detectable in a measurement.
+The values below were read from the sources on 2026-10-03.
+
+- **Store wait.** A select-only pgbench run against PostgreSQL measured 0.019 ms
+  average latency over a UNIX socket, 0.034 ms over TCP to localhost, and 0.420 ms
+  over one network hop
+  ([CYBERTEC](https://www.cybertec-postgresql.com/en/postgresql-performance-latency-in-the-cloud-and-on-premise/)).
+  An application server and its database usually sit on separate hosts. 1 ms is
+  about twice the one hop value.
+- **Password wait.** The wait stands for bcrypt at cost 12. The PHP RFC on the
+  bcrypt cost measured 0.159 s per hash at cost 12 on an Intel Xeon E-2246G and
+  0.240 s on an Apple M1 Pro, and it made cost 12 the default from PHP 8.4
+  ([PHP RFC](https://wiki.php.net/rfc/bcrypt_cost_2023)). 200 ms lies between the
+  two values. The OWASP Password Storage Cheat Sheet sets cost 10 as the minimum
+  and says that a hash should take less than one second
+  ([OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)).
+- **Timer slack.** On Linux, the default timer slack is 50 microseconds
+  ([PR_SET_TIMERSLACK](https://man7.org/linux/man-pages/man2/PR_SET_TIMERSLACK.2const.html)).
+  The store wait is 20 times that value. A platform with a coarser timer stretches
+  the store wait. The measurement method names the platform.
 
 ## Routes
 
