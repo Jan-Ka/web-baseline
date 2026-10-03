@@ -104,6 +104,36 @@ language than TechEmpower, but the unit is still the framework. The spread above
 the strongest indication in this survey that a framework ranking does not describe
 the language.
 
+### HttpArena
+
+[GitHub](https://github.com/MDA2AV/HttpArena), [site](https://www.http-arena.com/)
+
+Status: unverified
+
+Read 2026-10-03 from the repository at commit
+`5b111b8889fee61076f1d7dd14fdb3dfd12c8492`. The repository started on 2026-03-04,
+the same month TechEmpower archived its repository. It holds 220 framework
+directories. Each framework opts into a set of test profiles. The HTTP/1.1 profiles
+are baseline, short-lived connections, JSON with compression, JSON over TLS, a
+10 KB echo over TLS, async delay, three fixed-rate profiles, async database, static
+files over TLS, pipelined requests and fortunes. Further profiles cover HTTP/2,
+HTTP/3, gRPC, WebSocket and gateway setups. docs/research/workload.md describes the
+profiles without a database.
+
+All results come from one machine, an AMD Threadripper PRO 3995WX with 64 cores.
+Each profile runs 3 times per connection count for 5 seconds, 10 seconds for the
+database profile, and the best run counts. The load generators are gcannon, wrk,
+h2load and zrk. Results report requests per second, p99 latency, CPU and memory.
+The fixed-rate profiles read CPU time per request from the cgroup and score on cost,
+not on throughput.
+
+Each profile separates a standard type, which must use the framework defaults, from
+a tuned type, which may change worker counts, buffers and libraries.
+
+What it compares: frameworks, over many isolated profiles. What it isolates: closer
+to the server than TechEmpower, and most profiles hold no database. The unit is
+still the framework.
+
 ### Energy Efficiency across Programming Languages
 
 [2017 study page](https://greenlab.di.uminho.pt/?p=238),
@@ -318,7 +348,8 @@ connector.
 - **Remeasurable by a reader.** The Benchmarks Game documents its procedure. The
   others publish results only. This project publishes the procedure and the scripts.
 - **The nearest suite stopped.** TechEmpower archived its repository on 2026-03-24.
-  Whether anyone continues it is not checked.
+  HttpArena started in the same month and covers similar ground, with the
+  framework as its unit.
 
 ## What this project borrows
 
