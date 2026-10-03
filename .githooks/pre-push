@@ -1,0 +1,49 @@
+#!/usr/bin/env sh
+# This hook rejects a push that contains unsigned commits. It checks every
+# commit in each pushed range for a signature header. It does not check that the
+# signature is valid, because that needs the public keys. GitHub checks that
+# against the keys on your account, and the ruleset on main requires it.
+#
+# `task setup:hooks` activates this hook with: git config core.hooksPath .githooks
+# To bypass it on purpose, run: git push --no-verify
+zero=0000000000000000000000000000000000000000
+fail=0
+
+# git feeds one line per ref: <local ref> <local sha> <remote ref> <remote sha>
+while read -r local_ref local_sha remote_ref remote_sha; do
+    # A zero local sha deletes the remote ref. Nothing to check.
+    [ "$local_sha" = "$zero" ] && continue
+
+    if [ "$remote_sha" = "$zero" ]; then
+        # A new remote ref. Check every commit that no remote has yet.
+        commits="$(git rev-list "$local_sha" --not --remotes)"
+    else
+        commits="$(git rev-list "$remote_sha..$local_sha")"
+    fi
+
+    for sha in $commits; do
+        # The signature is a header named gpgsig, for GPG and for SSH alike.
+        # Headers end at the first empty line, so the body is not scanned.
+        if ! git cat-file commit "$sha" | sed '/^$/q' | grep -q '^gpgsig '; then
+            if [ "$fail" -eq 0 ]; then
+                cat >&2 <<'MSG'
+error: the push contains unsigned commits.
+
+main only accepts signed commits. These commits carry no signature:
+MSG
+            fi
+            git log -1 --format='  %h %s' "$sha" >&2
+            fail=1
+        fi
+    done
+done
+
+if [ "$fail" -ne 0 ]; then
+    cat >&2 <<'MSG'
+
+Sign them in place: git rebase --exec 'git commit --amend --no-edit -S' <base>
+For the last commit only:  git commit --amend --no-edit -S
+To bypass this hook on purpose: git push --no-verify
+MSG
+    exit 1
+fi
