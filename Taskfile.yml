@@ -53,8 +53,8 @@ tasks:
         }
         check git    '{{.HINT_GIT}}'
         check task   '{{.HINT_TASK}}'
-        check claude '{{.HINT_CLAUDE}}'
         check_optional op '{{.HINT_OP}}' "only task setup:secrets needs it"
+        check_optional claude '{{.HINT_CLAUDE}}' "only task setup:mcp needs it"
         check_optional pnpm '{{.HINT_PNPM}}' "only task lint and task fmt need it"
         [ "$MISSING" -ne 0 ] && echo "" && echo "Install the missing tools. Then run this task again." && exit 1
         echo "" && echo "All required tools exist on PATH."

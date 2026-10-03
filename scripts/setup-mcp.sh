@@ -11,13 +11,15 @@
 
 set -eu
 
-if [ ! -f .env ]; then
-  echo "[x] .env not found. Copy .env.example to .env and fill in the values, or run: task setup:secrets"
-  exit 1
+# Claude Code is optional. Without it there is nothing to register, and the rest
+# of `task setup` does not depend on this step.
+if ! command -v claude >/dev/null 2>&1; then
+  echo "[ ] claude is not installed. MCP registration skipped. Install Claude Code and run: task setup:mcp"
+  exit 0
 fi
 
-if ! command -v claude >/dev/null 2>&1; then
-  echo "[x] claude is not installed. Run: task check:prereqs"
+if [ ! -f .env ]; then
+  echo "[x] .env not found. Copy .env.example to .env and fill in the values, or run: task setup:secrets"
   exit 1
 fi
 
