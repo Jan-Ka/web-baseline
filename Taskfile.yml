@@ -55,7 +55,7 @@ tasks:
         check task   '{{.HINT_TASK}}'
         check_optional op '{{.HINT_OP}}' "only task setup:secrets needs it"
         check_optional claude '{{.HINT_CLAUDE}}' "only task setup:mcp needs it"
-        check_optional pnpm '{{.HINT_PNPM}}' "only task lint and task fmt need it"
+        check_optional pnpm '{{.HINT_PNPM}}' "only task lint, task fmt and task audit need it"
         [ "$MISSING" -ne 0 ] && echo "" && echo "Install the missing tools. Then run this task again." && exit 1
         echo "" && echo "All required tools exist on PATH."
 
@@ -153,8 +153,19 @@ tasks:
     cmds:
       - pnpm exec prettier --check "**/*.md"
 
+  # Since pnpm 12, the GitHub dependency graph shows only the pnpm binaries from
+  # pnpm-lock.yaml. Dependabot does not see these packages. This task does the
+  # check locally. pnpm-workspace.yaml holds the
+  # advisories that it ignores.
+  audit:
+    desc: Fail on known advisories in the pinned packages
+    deps: [deps]
+    cmds:
+      - pnpm audit
+
   check:
     desc: Everything CI gates on. Run before a push
     cmds:
       - task: fmt:check
       - task: lint
+      - task: audit

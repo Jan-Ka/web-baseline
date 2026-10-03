@@ -12,7 +12,8 @@ You need two tools:
 - [git](https://git-scm.com/)
 - [Task](https://taskfile.dev/)
 
-Three tools are optional. [pnpm](https://pnpm.io/) serves `task lint` and `task fmt`.
+Three tools are optional. [pnpm](https://pnpm.io/) serves `task lint`, `task fmt` and
+`task audit`.
 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) serves
 `task setup:mcp`, which registers the MCP servers for it. The
 [1Password CLI](https://developer.1password.com/docs/cli/) serves
@@ -97,11 +98,16 @@ The documents are part of the product, so they get the same treatment as source.
 ```sh
 task fmt      # prettier, aligns tables
 task lint     # markdownlint-cli2
-task check    # what CI gates on: fmt:check and lint
+task audit    # pnpm audit, known advisories in the pinned packages
+task check    # what CI gates on: fmt:check, lint and audit
 ```
 
 `package.json` and `pnpm-lock.yaml` pin both tools. The tasks install them into
 `node_modules/` on first use. `.gitignore` covers that directory.
+
+Since pnpm 12, Dependabot does not see the packages in `pnpm-lock.yaml`. `task audit`
+does this check locally. `pnpm-workspace.yaml` holds the advisories that it ignores.
+Add an advisory there only when no patched release exists.
 
 ## Writing style
 
