@@ -11,8 +11,9 @@ You need three tools:
 - [Task](https://taskfile.dev/)
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
 
-The [1Password CLI](https://developer.1password.com/docs/cli/) is optional. Run
-`task check:prereqs` to see which tools are missing.
+Two tools are optional. The [1Password CLI](https://developer.1password.com/docs/cli/)
+serves `task setup:secrets`. [pnpm](https://pnpm.io/) serves `task lint` and
+`task fmt`. Run `task check:prereqs` to see which tools are missing.
 
 Then create `.env`. `.gitignore` covers it. Pick one way:
 
@@ -81,6 +82,19 @@ GitHub checks signatures against the keys on your account. Add your signing key
 there first. See the GitHub guide on
 [commit signature verification](https://docs.github.com/authentication/managing-commit-signature-verification).
 `task setup:hooks` also sets `tag.gpgsign` for this repository.
+
+## Markdown lint and format
+
+The documents are part of the product, so they get the same treatment as source.
+
+```sh
+task fmt      # prettier, aligns tables
+task lint     # markdownlint-cli2
+task check    # what CI gates on: fmt:check and lint
+```
+
+`package.json` and `pnpm-lock.yaml` pin both tools. The tasks install them into
+`node_modules/` on first use. `.gitignore` covers that directory.
 
 ## Writing style
 

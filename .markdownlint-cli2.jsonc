@@ -1,0 +1,32 @@
+{
+  // Prose wraps at 85. Tables, code blocks and headings are exempt. A table row is
+  // as long as its widest cell, and a reflow costs readability.
+  "config": {
+    "MD013": {
+      "line_length": 85,
+      "tables": false,
+      "code_blocks": false,
+      "headings": false
+    },
+    // Tables are padded and column aligned. Prettier does the alignment. This rule
+    // keeps the compact |---|---| form out.
+    "MD060": {
+      "style": "aligned"
+    },
+    // The same heading text is permitted in different sections, not in one.
+    "MD024": {
+      "siblings_only": true
+    }
+  },
+  "globs": ["**/*.md"],
+  "ignores": [
+    "node_modules/**",
+    // Local only files. .gitignore lists them.
+    ".claude/**",
+    "CLAUDE.md",
+    "AGENTS.md",
+    "GEMINI.md",
+    "HANDOFF.md",
+    "PLAN.md"
+  ]
+}

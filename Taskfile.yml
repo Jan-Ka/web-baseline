@@ -21,6 +21,7 @@ vars:
   HINT_TASK: '{{if eq OS "windows"}}winget install Task.Task{{else if eq OS "darwin"}}brew install go-task{{else}}see https://taskfile.dev/installation/{{end}}'
   HINT_OP: '{{if eq OS "windows"}}winget install AgileBits.1Password.CLI{{else if eq OS "darwin"}}brew install 1password-cli{{else}}see https://developer.1password.com/docs/cli/get-started/{{end}}'
   HINT_CLAUDE: '{{if eq OS "windows"}}irm https://claude.ai/install.ps1 | iex{{else}}curl -fsSL https://claude.ai/install.sh | bash{{end}}'
+  HINT_PNPM: 'corepack enable pnpm'
 
 tasks:
   default:
@@ -54,6 +55,7 @@ tasks:
         check task   '{{.HINT_TASK}}'
         check claude '{{.HINT_CLAUDE}}'
         check_optional op '{{.HINT_OP}}' "only task setup:secrets needs it"
+        check_optional pnpm '{{.HINT_PNPM}}' "only task lint and task fmt need it"
         [ "$MISSING" -ne 0 ] && echo "" && echo "Install the missing tools. Then run this task again." && exit 1
         echo "" && echo "All required tools exist on PATH."
 
@@ -123,3 +125,36 @@ tasks:
           echo "[+] skill $1 at $3"
         }
         install_skill asd-ste100 https://github.com/danyuchn/asd-ste100-skill.git 7d4a135a199a5d7447c4886bcd7ffe742a627bc9
+
+  # Markdown is part of the product here. The documents get the same treatment as
+  # source: a pinned linter and a pinned formatter. package.json and pnpm-lock.yaml
+  # pin both tools. A floating tool version would let CI fail on a document that
+  # nobody touched.
+  deps:
+    desc: Install the pinned markdown tooling
+    cmds:
+      - pnpm install --frozen-lockfile
+
+  lint:
+    desc: Lint markdown (markdownlint-cli2)
+    deps: [deps]
+    cmds:
+      - pnpm exec markdownlint-cli2
+
+  fmt:
+    desc: Format markdown and align tables (prettier)
+    deps: [deps]
+    cmds:
+      - pnpm exec prettier --write "**/*.md"
+
+  fmt:check:
+    desc: Fail when markdown is not formatted. CI runs this
+    deps: [deps]
+    cmds:
+      - pnpm exec prettier --check "**/*.md"
+
+  check:
+    desc: Everything CI gates on. Run before a push
+    cmds:
+      - task: fmt:check
+      - task: lint

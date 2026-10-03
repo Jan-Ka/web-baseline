@@ -1,0 +1,10 @@
+{
+  "name": "web-baseline-docs-tooling",
+  "private": true,
+  "description": "Markdown lint and format tooling. The documents are part of the product, so the tools that check them are pinned like any other dependency.",
+  "packageManager": "pnpm@11.22.0",
+  "devDependencies": {
+    "markdownlint-cli2": "0.23.2",
+    "prettier": "3.9.6"
+  }
+}
