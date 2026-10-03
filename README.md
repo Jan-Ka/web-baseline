@@ -48,7 +48,7 @@ You need [git](https://git-scm.com/) and [Task](https://taskfile.dev/). Then:
 
 ```sh
 task setup    # hooks, secrets, MCP servers, skills
-task check    # markdown format and lint, what CI gates on
+task check    # markdown format and lint, package audit, what CI gates on
 ```
 
 `main` only accepts signed commits. Machine specific files never reach a commit, and

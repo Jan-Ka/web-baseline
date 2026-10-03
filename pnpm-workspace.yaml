@@ -1,0 +1,7 @@
+# task audit stops on every known advisory, except the advisories in this list.
+# Add an advisory only when no patched release exists. Remove it when a patched
+# release exists.
+auditConfig:
+  ignoreGhsas:
+    # braces <= 3.0.3, through micromatch. No patched release on 2026-10-03.
+    - GHSA-vfj7-8cjw-p6xm
