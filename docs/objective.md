@@ -73,5 +73,6 @@ languages, and whoever looks for this information.
   what "representative" means here and which workload stays outside the test.
 - Whether older versions enter the comparison, for example to show whether a gap
   closed over time.
-- Which languages enter the comparison, and by which rule.
+- Which implementations enter for a language with more than one. DE-0001 settles
+  which languages enter.
 - What size of difference counts as meaningful.
