@@ -32,11 +32,12 @@ The ecosystem counts as part of the language. Some major languages produce a bin
 that needs nothing from the operating system. Others need a runtime. That alone might
 cause large differences, so the comparison records it.
 
-The comparison measures each language in two tiers:
+The comparison measures each language in up to three tiers. DE-0003 sets them.
 
-1. The language without any framework.
-2. The language with the framework its community treats as essential for web apps.
-   Spring Boot is one example.
+1. The language distribution alone.
+2. The language with one lightweight library.
+3. The language with the full framework its community treats as essential for web
+   apps. Spring Boot is one example.
 
 Two further questions belong to the comparison:
 
@@ -71,6 +72,4 @@ languages, and whoever looks for this information.
 
 - Whether older versions enter the comparison, for example to show whether a gap
   closed over time.
-- Which implementations enter for a language with more than one. DE-0001 settles
-  which languages enter.
 - What size of difference counts as meaningful.
