@@ -165,7 +165,7 @@ fields. The derived tables carry an implementer column or state that it is const
 
 ## PR-0011. Partial results say what is missing
 
-A campaign over many languages and two tiers will have gaps: a toolchain that did not
+A campaign over many languages and three tiers will have gaps: a toolchain that did not
 install, a run that failed, an implementation that missed the cutoff. Stopping at the
 first gap makes the campaign useless. Continuing without a note produces a table
 that looks complete and is not.

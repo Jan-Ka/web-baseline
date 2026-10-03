@@ -2,9 +2,10 @@
 
 Does the base language have a meaningful effect on how a web application performs,
 and how large is that effect? This project answers that with a test that is
-repeatable and representative. The same workload runs in each language, in two
-tiers: the language alone, and the language with the framework its community treats
-as essential. The measurement is requests per second and resource consumption.
+repeatable and representative. The same workload runs in each language, in up to
+three tiers. These are the language alone, the language with one lightweight
+library, and the language with the framework its community treats as essential.
+The measurement is requests per second and resource consumption.
 
 The measured path holds no database, no authentication and no other connector. A
 test that includes them compares connector implementations as much as languages.
@@ -35,9 +36,9 @@ The rules, each with a checkable form, are in [docs/principles.md](docs/principl
 
 ## Status
 
-Decided: which languages enter the comparison (DE-0001) and the workload, a small
-marketplace driven by user flows (DE-0002). Open: the implementations per language,
-the tiers, and what size of difference counts as meaningful.
+Decided: which languages enter the comparison (DE-0001), the workload, a small
+marketplace driven by user flows (DE-0002), and the 12 subjects in three tiers
+(DE-0003). Open: what size of difference counts as meaningful.
 
 ## Reproducing the reference
 

@@ -32,16 +32,24 @@ Ecosystem
 objective treats it as part of the base language where it affects the measured
 path or the deployment form, and out of scope elsewhere.
 
-Tier
-: One of two ways to implement the workload in a language. The bare tier uses the
-language and its standard library only. The framework tier uses the framework the
-language community treats as essential for web applications. Each language
-appears once per tier.
+Server
+: The program that accepts HTTP and hands requests to the code, such as php-fpm,
+Kestrel or Tomcat. Not a subject. Each tier uses the server its rule names.
+DE-0003.
 
-Essential framework
-: The framework a language community treats as the default for a web application.
-One per language. The rule that picks it is an open question and belongs to the
-language selection spec.
+Tier
+: One of three ways to implement the workload for a subject. The standard library
+tier uses the language distribution alone. The micro library tier adds one
+lightweight library. The full framework tier uses one full framework. A subject
+appears at most once per tier. DE-0003.
+
+Micro library
+: A library that gives routing, request parsing and response helpers, without the
+structure of a full framework. One per subject. DE-0003 names them.
+
+Full framework
+: A framework that adds structure such as dependency injection, conventions or an
+ORM. One per subject, where the community has one. DE-0003 names them.
 
 Implementer
 : The person or agent that wrote an implementation. A recorded variable per
