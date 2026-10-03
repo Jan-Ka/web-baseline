@@ -1,0 +1,27 @@
+# Untested hypotheses
+
+Last revised: 2026-10-03
+
+This is the registry PR-0005 requires. It holds the claims the project relies on
+without a measurement of its own. Every site that relies on a claim cites its `HY-`
+ID, the way a site that uses a measured value cites its metric ID. That makes every
+dependent site findable from the row.
+
+A row in this table means the claim is open. There is no status column. A hypothesis
+retires when a measurement settles it. The change that lands the method, the campaign
+document and the reference rows deletes the row and updates the sites that cite the
+ID. Git keeps what the row used to say.
+
+Unverified prior art does not belong here. The project adopted nothing from it, and
+docs/prior-art.md holds it to a stricter rule: it cannot support a decision at all.
+An entry below may name a prior art entry as the reason the claim exists. It may not
+name it as evidence.
+
+| ID      | Claim                                                                                                                                                                                                                               | Relied on by                                                            | What would settle it                                                                                                                                                                                         |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| HY-0001 | The spread between frameworks within one language exceeds the spread between the best framework of each language. Reason: the the-benchmarker spread table in docs/prior-art.md.                                                    | The two tier design in docs/objective.md                                | One campaign that measures both tiers for every language, with the within language and between language spread reported per PR-0003.                                                                         |
+| HY-0002 | A self contained binary and an implementation that needs a runtime on the host differ in resource consumption. The difference counts as meaningful.                                                                                 | "The ecosystem counts as part of the language" in docs/objective.md     | Memory under load, cold start time and artefact size per implementation, with the deployment form recorded per implementation, compared across the two forms.                                                |
+| HY-0003 | Two implementers write the same language and tier. Their two results differ by more than two languages in the same tier differ. Reason: Prechelt 2000 in docs/prior-art.md.                                                         | PR-0010, and the open question of who implements in docs/objective.md   | Two implementations per language and tier from different implementers in one campaign, with the two spreads reported side by side.                                                                           |
+| HY-0004 | The framework a language community treats as essential costs throughput and memory against the bare tier of the same language.                                                                                                      | The second side investigation in docs/objective.md, the two tier design | The tier comparison in the first campaign, per language.                                                                                                                                                     |
+| HY-0005 | The load generator reaches its own limit before some implementations under test do, on hardware in the class of the development machine. Reason: Viitanen 2025 in docs/prior-art.md.                                                | The measurement method, not yet written                                 | The load generator's CPU and achieved rate recorded in every run. A run where the generator saturates carries a mark per PR-0011. A method that moves the generator to a second machine if the mark appears. |
+| HY-0006 | Public comparisons of languages for web development rank by requests per second from framework benchmarks that include a database. They report no spread, no memory and no hardware. Reason: the dev.to entry in docs/prior-art.md. | The first side investigation in docs/objective.md, the recommendation   | A survey document that lists the comparisons found, with the metric, the workload and the reported context per entry, and counts.                                                                            |
