@@ -55,14 +55,14 @@ it.
 ## The test
 
 Workload
-: The set of requests the load generator sends and the behaviour the implementation
-must show for each. One specification defines it for all languages and tiers.
-What it contains is the first open question in docs/objective.md.
+: The application every implementation builds and the user flows the load
+generator runs against it. SP-0001 defines it for all subjects and tiers.
+DE-0002.
 
 Representative
-: The property the workload must have: it stands for web and app development as the
-audience practises it. The project has not defined it yet. See the first open
-question in docs/objective.md.
+: The property the workload must have. Each request passes through the parts a web
+application runs in its own process, and the requests arrive in sessions, in the
+order users produce them. DE-0002 lists the parts.
 
 Conformance suite
 : The tests that check an implementation against the workload specification. An

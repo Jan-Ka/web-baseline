@@ -35,8 +35,9 @@ The rules, each with a checkable form, are in [docs/principles.md](docs/principl
 
 ## Status
 
-Decided: which languages enter the comparison (DE-0001). Open: the workload, the
-implementations per language, and what size of difference counts as meaningful.
+Decided: which languages enter the comparison (DE-0001) and the workload, a small
+marketplace driven by user flows (DE-0002). Open: the implementations per language,
+the tiers, and what size of difference counts as meaningful.
 
 ## Reproducing the reference
 

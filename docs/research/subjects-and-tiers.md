@@ -59,12 +59,32 @@ The objective has two tiers, the bare language and the framework. A whole
 application makes the bare tier uneven, because not every standard library has an
 HTTP server and JSON. The proposal is three tiers.
 
-1. **Standard library.** The language and its standard library only.
-2. **Minimal libraries.** The standard library plus the smallest accepted HTTP
-   server and JSON library, where the standard library has none. Rust and C++ enter
-   the comparison here. Each library is recorded.
-3. **Framework.** The framework the community treats as essential, on the server
-   the framework uses by default. Spring Boot embeds Tomcat, for example.
+1. **Standard library.** The language distribution alone.
+2. **Micro library.** One lightweight library per subject that gives routing,
+   request parsing and response helpers, without the structure of a full
+   framework. Every subject enters here, Rust and C++ included. Go uses a library
+   such as Gin here, not its standard library build.
+3. **Full framework.** The opinionated framework the community treats as
+   essential, on the server the framework uses by default. A full framework adds
+   structure such as dependency injection, conventions or an ORM. Spring Boot
+   embeds Tomcat, for example.
+
+The micro library tier carries the comparison across all subjects with minimal
+help. The standard library tier can therefore stay strict at little cost.
+
+The table lists candidates per subject. They are not yet researched.
+
+| Subject             | Micro library                  | Full framework       |
+| ------------------- | ------------------------------ | -------------------- |
+| Go                  | Gin, chi, Echo                 | no clear candidate   |
+| Node.js, Bun, Deno  | Express, Fastify, Hono, Elysia | NestJS, Next.js      |
+| Java, both subjects | Javalin, Helidon SE            | Spring Boot, Quarkus |
+| C#                  | ASP.NET Core minimal APIs      | ASP.NET Core MVC     |
+| Python              | Flask, FastAPI, Starlette      | Django               |
+| PHP                 | Slim                           | Laravel, Symfony     |
+| Ruby                | Sinatra, Roda                  | Rails                |
+| Rust                | axum, actix-web                | Loco                 |
+| C++                 | Crow, Drogon                   | no common candidate  |
 
 ### What the standard libraries hold
 
@@ -97,8 +117,12 @@ nginx into the measured path.
      implementer for those parts, the risk in HY-0003.
   3. Only standard libraries that can serve production traffic count. That leaves
      roughly Go, C#, Node.js, Bun and Deno.
-- **The minimal library tier for complete standard libraries.** Whether Go and the
-  others may still pick a library there, or repeat their standard library build.
+- **The rule that picks the library per subject** for the micro library and the
+  full framework tier, in the way DE-0001 picks the languages.
+- **The boundary between micro library and full framework.** FastAPI and ASP.NET
+  Core minimal APIs sit close to it.
+- **Subjects without a clear full framework,** such as Go and C++. They may have no
+  third tier, or the same library in tiers 2 and 3.
 - **The C++ compiler.**
 - **The web server in front of php-fpm,** and whether it counts as part of PHP.
 
