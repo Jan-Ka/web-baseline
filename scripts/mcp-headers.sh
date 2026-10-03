@@ -32,7 +32,7 @@ check_value() {
     exit 1
   fi
   case "$2" in
-    *\"*|*\*)
+    *\"*|*\\*)
       echo "mcp-headers: $1 contains a quote or a backslash. Refusing to build the JSON." >&2
       exit 1
       ;;
