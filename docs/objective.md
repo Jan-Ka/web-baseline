@@ -69,8 +69,6 @@ languages, and whoever looks for this information.
 
 ## Open questions
 
-- What a proper comparison encompasses. This is the first piece of work. It decides
-  what "representative" means here and which workload stays outside the test.
 - Whether older versions enter the comparison, for example to show whether a gap
   closed over time.
 - Which implementations enter for a language with more than one. DE-0001 settles
