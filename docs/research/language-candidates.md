@@ -66,42 +66,10 @@ How the ranks were read:
   do not show up. The Scala value may be a detection error.
 - TIOBE does not separate web work from other work.
 
-## High-traffic sites
+## Large sites
 
-These two sources show what the largest sites run. They are not part of the usage
-sources that DE-0001 counts.
-
-W3Techs splits the server side language share by traffic rank. The page shows only
-the top three languages. Values are percent, read on 2026-10-03.
-
-| Language   | Top 1,000 | Top 10,000 | Top 100,000 | Top 1,000,000 | All sites |
-| ---------- | --------: | ---------: | ----------: | ------------: | --------: |
-| PHP        |      58.8 |       60.0 |        61.3 |          64.8 |      69.8 |
-| JavaScript |      30.6 |       27.3 |        20.1 |          12.7 |       7.6 |
-| Ruby       |       8.1 |        8.4 |         9.2 |          12.5 |       7.1 |
-
-The share of JavaScript grows with traffic and the share of PHP falls.
-
-The Wikipedia article
-[Programming languages used in most popular websites](https://en.wikipedia.org/wiki/Programming_languages_used_in_most_popular_websites)
-lists the back end languages of 16 large sites. The page was last edited on
-2026-10-01. Its entries cite older sources, and a large site runs many services in
-many languages, so a listed language does not show how much of the site uses it.
-
-| Back end language | Sites | Sites that list it                                                   |
-| ----------------- | ----: | -------------------------------------------------------------------- |
-| Java              |     8 | Google, Facebook, YouTube, Amazon, X, eBay, LinkedIn, Netflix        |
-| PHP               |     6 | Facebook, Yahoo, Etsy, Wikipedia, Fandom, WordPress.com              |
-| C++               |     6 | Google, Facebook, YouTube, Amazon, X, Bing                           |
-| Python            |     5 | Google, Facebook, YouTube, Pinterest, Netflix                        |
-| JavaScript        |     3 | Google, eBay, LinkedIn                                               |
-| Scala             |     3 | X, eBay, LinkedIn                                                    |
-| C                 |     2 | Google, YouTube                                                      |
-| Go                |     2 | Google, YouTube                                                      |
-| C#                |     2 | Bing, MSN                                                            |
-| Erlang            |     2 | Facebook, Pinterest                                                  |
-| Ruby              |     1 | X                                                                    |
-| Others            |     1 | Perl at Amazon, Hack, D and Haskell at Facebook, Elixir at Pinterest |
+docs/research/large-sites.md lists the back end languages of large sites. It is not
+part of the usage sources that DE-0001 counts.
 
 ## Benchmark repositories
 
@@ -197,8 +165,9 @@ repositories, and picking that list adds bias.
 3. Kotlin, Scala and C++ have many TechEmpower entries and a low rank for web work
    in the other sources.
 4. Crystal, Nim and Zig appear only in the benchmark repositories.
-5. At the largest sites, Java, PHP, C++ and Python appear most often. Rust does
-   not appear in the Wikipedia table.
+5. Large sites run their main back end in Ruby, PHP, Python, Java, Go, C# and
+   Hack. None of the sites in docs/research/large-sites.md names Rust as its main
+   back end.
 6. JavaScript and TypeScript run on Node.js, Bun and Deno. A base language includes
    its implementation, so the choice has to name the implementations too. Java and
    Kotlin share the JVM.

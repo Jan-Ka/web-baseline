@@ -67,9 +67,10 @@ is not enough, because the counts depend on who contributes to it. C# has 22
 entries in one and 8 in the other.
 
 Ruby meets neither condition. It misses the TIOBE top 20 and the Octoverse top 10.
-The project author adds it by choice, not by the data. In the data, Ruby ranks 3
-at W3Techs and 9 at RedMonk, and holds 8.1 percent of the top 1,000 sites at
-W3Techs.
+The project author adds it by choice. The reason is its use at large sites, under
+HY-0008. GitHub, Shopify and GitLab run their main application on Ruby on Rails,
+according to docs/research/large-sites.md. In the rankings, Ruby is 3 at W3Techs
+and 9 at RedMonk, and it holds 8.1 percent of the top 1,000 sites at W3Techs.
 
 ## Decision
 
@@ -90,14 +91,14 @@ Rust and Ruby.
 - The comparison starts with nine languages. Kotlin is the next one.
 - Ruby is the only language that enters without meeting a condition. A later
   campaign keeps Ruby only if the author confirms the choice again.
-- C++ enters through the rankings, not through web use. The high-traffic sites in
-  the research document list C++ at 6 of 16 sites, but the benchmark repositories
-  have few C++ entries in the-benchmarker.
+- C++ enters through the rankings, not through web use. The Wikipedia table in
+  docs/research/large-sites.md lists C++ at 6 of 16 sites, but no site in that
+  document names C++ as its main back end.
 - A later campaign applies the rule again to current data. The list can change
   between campaigns.
 - The decision does not settle which implementations enter for a language with more
   than one, such as Node.js, Bun and Deno. It also does not settle whether
   JavaScript and TypeScript count as one language or two in the results. Both stay
   open.
-- The usage part rests on HY-0007. If a check of the rankings changes the result,
-  this decision is revisited.
+- The usage part rests on HY-0007. The choice of Ruby rests on HY-0008. If a check
+  of the rankings or the sites changes the result, this decision is revisited.

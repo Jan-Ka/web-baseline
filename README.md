@@ -35,6 +35,7 @@ The rules, each with a checkable form, are in [docs/principles.md](docs/principl
 | [prior art](docs/prior-art.md)                              | the survey of existing comparisons, with a status on every entry        |
 | [hypotheses](docs/hypotheses.md)                            | the claims the project relies on without a measurement of its own       |
 | [language candidates](docs/research/language-candidates.md) | the data behind the language selection in DE-0001                       |
+| [large sites](docs/research/large-sites.md)                 | the back end languages of large, well known sites                       |
 | [decisions](docs/decisions/)                                | one file per decision, with the data it rests on                        |
 | [setup](docs/setup.md)                                      | how to prepare a clone for work on the repository                       |
 
