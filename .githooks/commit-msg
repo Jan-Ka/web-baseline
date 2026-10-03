@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+# This hook rejects commit messages that contain AI assistant attribution
+# trailers. The commit history stays human authored.
+#
+# Every pattern starts at the beginning of a line. A subject or body that
+# only talks about these trailers passes. Word boundaries use POSIX classes,
+# because `\b` is a GNU extension that BusyBox grep does not support.
+#
+# `task setup:hooks` activates this hook with: git config core.hooksPath .githooks
+# To bypass it on purpose, run: git commit --no-verify
+msg_file="$1"
+
+# Match bytes, not characters. The "Generated with" trailer starts with an
+# emoji, and grep on Git for Windows cannot match it in a UTF-8 locale. In the
+# C locale the emoji is a run of non-alphanumeric bytes, which the pattern
+# below skips. All other patterns are ASCII, so -i still works.
+LC_ALL=C
+export LC_ALL
+
+tools='(claude|anthropic|copilot|cursor|aider|codeium|windsurf|gemini|openai|codex|gpt)'
+
+if grep -qiE "^[[:space:]]*Co-Authored-By:.*[^[:alnum:]]${tools}([^[:alnum:]]|$)" "$msg_file" \
+   || grep -qiE '^[[:space:]]*Co-Authored-By:.*noreply@(anthropic|openai)\.com' "$msg_file" \
+   || grep -qiE "^[^[:alnum:]]*Generated (with|by)[^[:alnum:]]+(\[)?${tools}" "$msg_file"; then
+    cat >&2 <<'MSG'
+error: the commit message contains AI assistant attribution.
+
+Remove every "Co-Authored-By: ...Claude/Anthropic/Copilot/..." trailer and
+every "Generated with..." line. Then commit again.
+
+To bypass this hook on purpose: git commit --no-verify
+MSG
+    exit 1
+fi

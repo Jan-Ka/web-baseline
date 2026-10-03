@@ -1,0 +1,115 @@
+#!/usr/bin/env sh
+# This hook rejects staged content that must stay on the developer machine:
+# dotenv files, agent and editor workspace files, and lines that look like
+# credentials. .gitignore lists these paths. `git add -f` or a broken ignore rule
+# can still stage them. The hook stops the commit before that happens.
+#
+# `task setup:hooks` activates this hook with: git config core.hooksPath .githooks
+# To bypass it on purpose, run: git commit --no-verify
+staged="$(git diff --cached --name-only --diff-filter=ACMR)"
+
+# Keep ai_re in step with the agent section of .gitignore.
+env_re='(^|/)\.env(\..+)?$'
+env_ok_re='(^|/)\.env\.example$'
+ai_re='(^|/)(\.claude/|CLAUDE\.md$|AGENTS\.md$|GEMINI\.md$|HANDOFF\.md$|PLAN\.md$|\.mcp\.json$|\.cursor/|\.cursorrules$|\.aider|\.continue/|\.windsurf/|\.codeium/|\.github/copilot-instructions\.md$)'
+editor_re='(^|/)(\.vscode/|\.idea/|\.vs/)'
+secret_re='(ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|gho_[A-Za-z0-9]{30,}|glpat-[A-Za-z0-9_-]{20,}|npm_[A-Za-z0-9]{30,}|ops_[A-Za-z0-9]{30,}|sk-[A-Za-z0-9_-]{30,}|xox[baprs]-[A-Za-z0-9-]{10,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----)'
+
+fail=0
+
+env_hits="$(printf '%s\n' "$staged" | grep -E "$env_re" | grep -vE "$env_ok_re" || true)"
+if [ -n "$env_hits" ]; then
+    cat >&2 <<'MSG'
+error: the commit contains dotenv files.
+
+Only .env.example goes into the repository. These staged paths hold machine specific
+configuration or secrets. They must stay local:
+MSG
+    printf '%s\n' "$env_hits" >&2
+    fail=1
+fi
+
+ai_hits="$(printf '%s\n' "$staged" | grep -iE "$ai_re" || true)"
+if [ -n "$ai_hits" ]; then
+    cat >&2 <<'MSG'
+error: the commit contains agent workspace files.
+
+These staged paths look like AI coding tool workspace data. They must not
+land in this repository:
+MSG
+    printf '%s\n' "$ai_hits" >&2
+    fail=1
+fi
+
+editor_hits="$(printf '%s\n' "$staged" | grep -iE "$editor_re" || true)"
+if [ -n "$editor_hits" ]; then
+    cat >&2 <<'MSG'
+error: the commit contains editor workspace files.
+
+These staged paths look like personal editor configuration. They must stay
+gitignored:
+MSG
+    printf '%s\n' "$editor_hits" >&2
+    fail=1
+fi
+
+# The scan covers added lines only. An old false positive then cannot block
+# unrelated work. The output shows the file and the first 8 characters of each
+# match. It never prints the whole token, so the hook output is safe to share.
+secret_hits=""
+while IFS= read -r file; do
+    [ -n "$file" ] || continue
+    matches="$(git diff --cached -U0 --diff-filter=ACMR -- "$file" \
+        | grep -E '^\+' | grep -vE '^\+\+\+' | grep -oE "$secret_re" || true)"
+    [ -n "$matches" ] || continue
+    while IFS= read -r tok; do
+        [ -n "$tok" ] || continue
+        secret_hits="${secret_hits}${file}: $(printf '%s' "$tok" | cut -c1-8)... (${#tok} chars)
+"
+    done <<MATCHES
+$matches
+MATCHES
+done <<STAGED
+$staged
+STAGED
+if [ -n "$secret_hits" ]; then
+    cat >&2 <<'MSG'
+error: the staged changes contain a line that looks like a credential.
+
+The scan matches GitHub, GitLab, npm, 1Password, OpenAI-style and Slack
+tokens, AWS keys and private keys. Matches, masked:
+MSG
+    printf '%s' "$secret_hits" >&2
+    fail=1
+fi
+
+# Signing. The ruleset on main requires a valid signature. This check catches a
+# machine where signing is off before the commit exists. It cannot see a
+# --no-gpg-sign flag. The pre-push hook checks the result.
+if [ "$(git config --get --type=bool commit.gpgsign 2>/dev/null)" != "true" ]; then
+    cat >&2 <<'MSG'
+error: commit signing is off.
+
+main only accepts signed commits. Turn signing on for this user:
+  git config --global commit.gpgsign true
+See https://docs.github.com/authentication/managing-commit-signature-verification
+MSG
+    fail=1
+elif [ "$(git config --get gpg.format 2>/dev/null)" = "ssh" ] && [ -z "$(git config --get user.signingkey 2>/dev/null)" ]; then
+    cat >&2 <<'MSG'
+error: SSH signing is on, but user.signingkey is not set.
+
+Point git at your public signing key:
+  git config --global user.signingkey ~/.ssh/<key>.pub
+MSG
+    fail=1
+fi
+
+if [ "$fail" -ne 0 ]; then
+    cat >&2 <<'MSG'
+
+Unstage the listed paths with `git restore --staged <path>`. Make sure they
+stay gitignored. To bypass this hook on purpose: git commit --no-verify
+MSG
+    exit 1
+fi

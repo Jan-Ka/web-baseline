@@ -1,0 +1,20 @@
+# Git normalises line endings on commit. The rules below control checkout.
+* text=auto
+
+# sh executes the git hooks and the setup scripts. CRLF breaks the shebang line.
+# These files stay LF on every platform, whatever core.autocrlf says.
+.githooks/* text eol=lf
+scripts/*.sh text eol=lf
+
+# CI tools check these text formats on Linux. They stay LF.
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.jsonc text eol=lf
+*.toml text eol=lf
+.editorconfig text eol=lf
+.env.example text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+Taskfile.yml text eol=lf

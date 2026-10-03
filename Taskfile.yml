@@ -1,0 +1,125 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+# `task setup` prepares a fresh clone. It writes all machine specific state:
+# .env, the Claude Code MCP registrations, the git hook activation and the Claude
+# Code skills. None of that state goes into the repository. See .gitignore and
+# .githooks/pre-commit for the enforcement.
+#
+# .env is the source of truth for tokens. Write it by hand from .env.example, or
+# let `task setup:secrets` write it from .env.1password with the 1Password CLI.
+# The 1Password CLI is optional.
+#
+# Task runs every command in its own embedded POSIX shell on Windows, macOS and
+# Linux. The same Taskfile and the same scripts work on all three. The embedded
+# shell has built-in rm, mv, cat and mkdir. It has no grep, sed, head, cut or
+# uname. Use shell builtins and git only.
+
+vars:
+  # Install hints for check:prereqs, chosen by host OS at template time.
+  HINT_GIT: '{{if eq OS "windows"}}winget install Git.Git{{else if eq OS "darwin"}}brew install git{{else}}sudo apt install git{{end}}'
+  HINT_TASK: '{{if eq OS "windows"}}winget install Task.Task{{else if eq OS "darwin"}}brew install go-task{{else}}see https://taskfile.dev/installation/{{end}}'
+  HINT_OP: '{{if eq OS "windows"}}winget install AgileBits.1Password.CLI{{else if eq OS "darwin"}}brew install 1password-cli{{else}}see https://developer.1password.com/docs/cli/get-started/{{end}}'
+  HINT_CLAUDE: '{{if eq OS "windows"}}irm https://claude.ai/install.ps1 | iex{{else}}curl -fsSL https://claude.ai/install.sh | bash{{end}}'
+
+tasks:
+  default:
+    desc: List available tasks
+    silent: true
+    cmd: task --list
+
+  check:prereqs:
+    desc: Check that the required development tools exist on PATH
+    silent: true
+    cmds:
+      - |
+        MISSING=0
+        check() {
+          if command -v "$1" >/dev/null 2>&1; then
+            "$1" --version 2>&1 | { IFS= read -r line; echo "[+] $1  $line"; }
+          else
+            echo "[x] $1 is not installed. Install: $2"
+            MISSING=1
+          fi
+        }
+        # An optional tool prints a note and does not fail the check.
+        check_optional() {
+          if command -v "$1" >/dev/null 2>&1; then
+            "$1" --version 2>&1 | { IFS= read -r line; echo "[+] $1  $line"; }
+          else
+            echo "[ ] $1 is not installed. Optional: $3. Install: $2"
+          fi
+        }
+        check git    '{{.HINT_GIT}}'
+        check task   '{{.HINT_TASK}}'
+        check claude '{{.HINT_CLAUDE}}'
+        check_optional op '{{.HINT_OP}}' "only task setup:secrets needs it"
+        [ "$MISSING" -ne 0 ] && echo "" && echo "Install the missing tools. Then run this task again." && exit 1
+        echo "" && echo "All required tools exist on PATH."
+
+  setup:
+    desc: Prepare a fresh clone (prereqs, git hooks, secrets, MCP, skills)
+    cmds:
+      - task: check:prereqs
+      - task: setup:hooks
+      - task: setup:secrets
+      - task: setup:mcp
+      - task: setup:skills
+      - cmd: echo "" && echo "Setup complete."
+        silent: true
+
+  setup:hooks:
+    desc: Activate the git hooks in .githooks and sign tags
+    cmds:
+      - git config core.hooksPath .githooks
+      - cmd: echo "[+] core.hooksPath set to .githooks"
+        silent: true
+      # The global config signs commits. This line does the same for tags.
+      - git config tag.gpgsign true
+      - cmd: echo "[+] tag.gpgsign set to true for this repository"
+        silent: true
+
+  setup:secrets:
+    desc: Write .env from .env.1password with 1Password. Skipped when .env exists without it
+    silent: true
+    cmds:
+      - . scripts/setup-secrets.sh
+
+  setup:mcp:
+    desc: Register the Claude Code MCP servers (github, context7) for this project
+    silent: true
+    cmds:
+      - . scripts/setup-mcp.sh
+
+  mcp:headers:
+    desc: Print the HTTP headers for one MCP server as JSON (Claude Code headers helper)
+    silent: true
+    # Task loads .env into the environment of this task. It ignores a missing file,
+    # and the script reports that case with a hint. Claude Code sets
+    # CLAUDE_CODE_MCP_SERVER_NAME. For a manual check pass the name after --.
+    dotenv: [".env"]
+    env:
+      MCP_SERVER: "{{.CLI_ARGS}}"
+    cmds:
+      - . scripts/mcp-headers.sh
+
+  setup:skills:
+    desc: Install or update the Claude Code skills in .claude/skills
+    silent: true
+    cmds:
+      - |
+        # Each skill is a git clone under .claude/skills/<name>. The directory is
+        # gitignored. Every skill points to one commit. Claude follows the skill
+        # text as instructions, so an unpinned clone would run whatever the
+        # upstream author pushes next. To upgrade, change the hash here on purpose.
+        install_skill() {
+          dir=".claude/skills/$1"
+          if [ ! -d "$dir/.git" ]; then
+            mkdir -p .claude/skills
+            git clone -q "$2" "$dir"
+          fi
+          git -C "$dir" fetch -q origin
+          git -C "$dir" checkout -q "$3"
+          echo "[+] skill $1 at $3"
+        }
+        install_skill asd-ste100 https://github.com/danyuchn/asd-ste100-skill.git 7d4a135a199a5d7447c4886bcd7ffe742a627bc9

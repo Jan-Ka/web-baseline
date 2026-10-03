@@ -1,0 +1,35 @@
+# Machine specific configuration. .env.example documents every variable.
+# `task setup:secrets` writes .env from .env.1password. Only .env.example is
+# committed. The pre-commit hook rejects every other .env* file.
+.env
+.env.*
+!.env.example
+
+# Agent and editor workspace files. These stay local and are never committed.
+# Keep this list in step with ai_re in .githooks/pre-commit.
+# `task setup:skills` writes the Claude Code skills to .claude/skills.
+.claude/
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+HANDOFF.md
+PLAN.md
+.mcp.json
+.cursor/
+.cursorrules
+.aider*
+.continue/
+.windsurf/
+.codeium/
+.github/copilot-instructions.md
+.vscode/
+.idea/
+.vs/
+*.swp
+
+# Task runner cache
+.task/
+
+# OS
+Thumbs.db
+.DS_Store
