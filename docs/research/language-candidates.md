@@ -206,7 +206,8 @@ repositories, and picking that list adds bias.
 ## Candidate list
 
 DE-0001 includes a language if it is in the top 20 of every ranking, or if it has
-at least 30 entries in each benchmark repository. That rule gives this list.
+at least 30 entries in each benchmark repository. Ruby meets neither condition and
+enters by the choice of the project author. This gives the following list.
 
 - JavaScript or TypeScript
 - Python
@@ -216,8 +217,9 @@ at least 30 entries in each benchmark repository. That rule gives this list.
 - Go
 - C++
 - Rust
+- Ruby
 
-Ruby would be the next language, then Kotlin.
+Kotlin would be the next language.
 
 ## Open points
 

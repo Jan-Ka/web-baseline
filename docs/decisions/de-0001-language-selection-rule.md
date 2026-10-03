@@ -1,4 +1,4 @@
-# DE-0001. Languages enter by usage rank or by benchmark presence
+# DE-0001. Languages enter by usage rank, by benchmark presence, or by choice
 
 Date: 2026-10-03
 
@@ -66,6 +66,11 @@ The cut at 30 entries in each repository is also a judgement. A single repositor
 is not enough, because the counts depend on who contributes to it. C# has 22
 entries in one and 8 in the other.
 
+Ruby meets neither condition. It misses the TIOBE top 20 and the Octoverse top 10.
+The project author adds it by choice, not by the data. In the data, Ruby ranks 3
+at W3Techs and 9 at RedMonk, and holds 8.1 percent of the top 1,000 sites at
+W3Techs.
+
 ## Decision
 
 A language enters the comparison if it meets at least one of these conditions.
@@ -75,13 +80,16 @@ A language enters the comparison if it meets at least one of these conditions.
    only 10 places.
 2. It has at least 30 entries in each of the two benchmark repositories.
 
-On 2026-10-03 this gives JavaScript or TypeScript, Python, Java, C#, PHP, Go, C++
-and Rust.
+In addition, Ruby enters by the choice of the project author.
+
+On 2026-10-03 this gives JavaScript or TypeScript, Python, Java, C#, PHP, Go, C++,
+Rust and Ruby.
 
 ## Consequences
 
-- The comparison starts with eight languages. Ruby is the next one. It misses the
-  TIOBE top 20 and the Octoverse top 10. Kotlin follows Ruby.
+- The comparison starts with nine languages. Kotlin is the next one.
+- Ruby is the only language that enters without meeting a condition. A later
+  campaign keeps Ruby only if the author confirms the choice again.
 - C++ enters through the rankings, not through web use. The high-traffic sites in
   the research document list C++ at 6 of 16 sites, but the benchmark repositories
   have few C++ entries in the-benchmarker.
